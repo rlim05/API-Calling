@@ -33,6 +33,12 @@ struct ContentView: View {
             }
             .navigationTitle("Periodic Table")
         }
+        .onAppear(perform: {
+            getElements()
+        })
+    }
+    func getElements {
+        let apiKey = "?rapidapi-key=6b5fc628d7mshf421193b1155fbep1e47f7jsn167190dfb2bc"
     }
 }
 
