@@ -10,8 +10,29 @@ import SwiftUI
 struct ContentView: View {
     @State private var elements = [Element]()
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        NavigationView{
+            List(elements) { element in
+                NavigationLink(
+                    destination: VStack {
+                        Text(element.atomicMass)
+                            .padding()
+                        Text(element.atomicNumber)
+                            .padding()
+                        Text(element.meltingPoint)
+                            .padding()
+                        Text(element.boilingPoint)
+                            .padding()
+                        Text(element.symbol)
+                            .padding()
+                        Text(element.groupBlock)
+                            padding()
+                    },
+                    label: {
+                        Text(element.name)
+                    })
+            }
+            .navigationTitle("Periodic Table")
+        }
     }
 }
 
@@ -23,6 +44,7 @@ struct ContentView_Previews: PreviewProvider {
 
 struct Element: Identifiable {
     let id = UUID()
+    var name: String
     var atomicMass: String
     var atomicNumber: String
     var meltingPoint: String
@@ -30,3 +52,4 @@ struct Element: Identifiable {
     var symbol: String
     var groupBlock: String
 }
+
