@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var elements = [Element]()
+    @State private var showingAlert = false
     var body: some View {
         NavigationView{
             List(elements) { element in
@@ -18,14 +19,8 @@ struct ContentView: View {
                             .padding()
                         Text(element.atomicNumber)
                             .padding()
-                        Text(element.meltingPoint)
-                            .padding()
-                        Text(element.boilingPoint)
-                            .padding()
                         Text(element.symbol)
                             .padding()
-                        Text(element.groupBlock)
-                            padding()
                     },
                     label: {
                         Text(element.name)
@@ -36,9 +31,31 @@ struct ContentView: View {
         .onAppear(perform: {
             getElements()
         })
+        .alert(isPresented: $showingAlert, content: {
+            Alert(title: Text("Loading Error"),
+                  message: Text("There was a problem loading the data"),
+                  dismissButton: .default(Text("OK")))
+        })
     }
-    func getElements {
+    func getElements() {
         let apiKey = "?rapidapi-key=6b5fc628d7mshf421193b1155fbep1e47f7jsn167190dfb2bc"
+        let query = "https://periodictable.p.rapidapi.com/\(apiKey)"
+        if let url = URL(string: query) {
+            if let data = try? Data(contentsOf: url) {
+                let json = try! JSON(data: data)
+                    let contents = json.arrayValue
+                    for item in contents {
+                        let name = item["name"].stringValue
+                        let atomicMass = item["atomicMass"].stringValue
+                        let atomicNumber = item["atomicNumber"].stringValue
+                        let symbol = item["symbol"].stringValue
+                        let element = Element(name: name, atomicMass: atomicMass, atomicNumber: atomicNumber, symbol: symbol)
+                        elements.append(element)
+                    }
+                    return
+                }
+            }
+        showingAlert = true
     }
 }
 
@@ -53,9 +70,6 @@ struct Element: Identifiable {
     var name: String
     var atomicMass: String
     var atomicNumber: String
-    var meltingPoint: String
-    var boilingPoint: String
     var symbol: String
-    var groupBlock: String
 }
 
